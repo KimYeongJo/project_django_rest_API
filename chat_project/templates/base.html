@@ -22,7 +22,7 @@
             <div class="col d-flex justify-content-end me-4">
             {% if user.is_authenticated %}
                 <span class="mt-1">{{ user.username }}</span>
-                <a class="btn btn-outline-secondary ms-3" href="{% url 'user:auth' %}">로그아웃</a>
+                <a class="btn btn-outline-secondary ms-3" href="{% url 'user:logout' %}">로그아웃</a>
             {% else %}
                 <a class="btn btn-outline-secondary" href="{% url 'user:auth' %}">로그인</a>
                 <a class="btn btn-outline-secondary ms-3" href="{% url 'user:register' %}">회원가입</a>

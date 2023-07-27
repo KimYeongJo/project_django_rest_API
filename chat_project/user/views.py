@@ -2,12 +2,16 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer, TokenRefreshSerializer
 from rest_framework import status
-from .serializers import *
+from .serializers import UserSerializer
 from django.contrib.auth import authenticate
 from django.shortcuts import get_object_or_404
 import jwt
 from chat_project.settings import SECRET_KEY
+from django.contrib.auth import get_user_model
 from rest_framework import exceptions
+
+User = get_user_model()
+
 
 class Register(APIView):
     def post(self, request):
@@ -80,6 +84,10 @@ class Auth(APIView):
             username=username,
             password=password
         )
+        # user = User.objects.filter(
+        #     username=username
+        # )
+
 
         if (username is None) or (password is None):
             raise exceptions.AuthenticationFailed(
@@ -116,8 +124,8 @@ class Auth(APIView):
             status=status.HTTP_400_BAD_REQUEST
         )
 
-    # 로그아웃
-    def delete(self, request):
+class Logout(APIView):
+    def post(self, request):
         # 쿠키에 저장된 토큰 삭제 => 로그아웃 처리
         response = Response({
             "message": "로그아웃"

@@ -21,6 +21,6 @@ from .views import *
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', Main.as_view(), name='main'),
-    path('', include('chatbot.urls')),
-    path('', include('user.urls'))
+    path('chatbot/', include('chatbot.urls')),
+    path('user/', include('user.urls'))
 ]
