@@ -14,7 +14,7 @@
     <header class="py-3">
         <div class="d-flex justify-content-between align-items-center">
             <div class="d-flex justify-content-start col ms-2">
-                <a class="btn btn-lg" href="{% url 'home' %}">메인</a>
+                <a class="btn btn-lg" href="{% url 'main' %}">메인</a>
             </div>
             <div class="col text-center fs-1">
                 문제 생성기
@@ -22,9 +22,9 @@
             <div class="col d-flex justify-content-end me-4">
             {% if user.is_authenticated %}
                 <span class="mt-1">{{ user.username }}</span>
-                <a class="btn btn-outline-secondary ms-3" href="{% url 'user:logout' %}?next={{ request.path }}">로그아웃</a>
+                <a class="btn btn-outline-secondary ms-3" href="{% url 'user:auth' %}">로그아웃</a>
             {% else %}
-                <a class="btn btn-outline-secondary" href="{% url 'user:login' %}?next={{ request.path }}">로그인</a>
+                <a class="btn btn-outline-secondary" href="{% url 'user:auth' %}">로그인</a>
                 <a class="btn btn-outline-secondary ms-3" href="{% url 'user:register' %}">회원가입</a>
             {% endif %}
             </div>
