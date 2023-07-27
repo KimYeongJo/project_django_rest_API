@@ -38,7 +38,7 @@ class Register(APIView):
             res.set_cookie("refresh", refresh_token, httponly=True)
 
             return res
-        return Response(serializers.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class Auth(APIView):
