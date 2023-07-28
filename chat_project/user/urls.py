@@ -8,5 +8,6 @@ urlpatterns = [
     path('register/', Register.as_view(), name='register'),
     path('auth/', Auth.as_view(), name='auth'),
     path('auth/refresh/', TokenRefreshView.as_view()),
+    path('login/', Login.as_view(), name='login'),
     path('logout/', Logout.as_view(), name='logout')
 ]

@@ -41,8 +41,8 @@ class Register(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+# 유저 정보 확인
 class Auth(APIView):
-    # 유저 정보 확인
     def get(self, request):
         try:
             # access token을 decode 해서 유저 id 추출 => 유저 식별
@@ -53,8 +53,8 @@ class Auth(APIView):
             serializer = UserSerializer(instance=user)
             return Response(serializer.data, status=status.HTTP_200_OK)
 
+        # 토큰 만료 시 토큰 갱신
         except(jwt.exceptions.ExpiredSignatureError):
-            # 토큰 만료 시 토큰 갱신
             data = {'refresh': request.COOKIES.get('refresh', None)}
             serializer = TokenRefreshSerializer(data=data)
             if serializer.is_valid(raise_exception=True):
@@ -71,11 +71,12 @@ class Auth(APIView):
                 return res
             raise jwt.exceptions.InvalidTokenError
 
+        # 사용 불가능한 토큰일 때
         except(jwt.exceptions.InvalidTokenError):
-            # 사용 불가능한 토큰일 때
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
-    # 로그인
+
+class Login(APIView):
     def post(self, request):
         username = request.data.get("username")
         password = request.data.get("password")
@@ -84,14 +85,9 @@ class Auth(APIView):
             username=username,
             password=password
         )
-        # user = User.objects.filter(
-        #     username=username
-        # )
-
 
         if (username is None) or (password is None):
-            raise exceptions.AuthenticationFailed(
-                'username and password required')
+            raise exceptions.AuthenticationFailed('username and password required')
         if (user is None):
             raise exceptions.AuthenticationFailed('user not found')
         if (not user.check_password(password)):
@@ -124,12 +120,10 @@ class Auth(APIView):
             status=status.HTTP_400_BAD_REQUEST
         )
 
+
 class Logout(APIView):
     def post(self, request):
-        # 쿠키에 저장된 토큰 삭제 => 로그아웃 처리
-        response = Response({
-            "message": "로그아웃"
-            }, status=status.HTTP_202_ACCEPTED)
+        response = Response({"message": "로그아웃"}, status=status.HTTP_202_ACCEPTED)
         response.delete_cookie("access")
         response.delete_cookie("refresh")
         return response

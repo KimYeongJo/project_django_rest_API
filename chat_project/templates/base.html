@@ -24,7 +24,7 @@
                 <span class="mt-1">{{ user.username }}</span>
                 <a class="btn btn-outline-secondary ms-3" href="{% url 'user:logout' %}">로그아웃</a>
             {% else %}
-                <a class="btn btn-outline-secondary" href="{% url 'user:auth' %}">로그인</a>
+                <a class="btn btn-outline-secondary" href="{% url 'user:login' %}">로그인</a>
                 <a class="btn btn-outline-secondary ms-3" href="{% url 'user:register' %}">회원가입</a>
             {% endif %}
             </div>
