@@ -9,7 +9,9 @@ import os
 import jwt
 from chat_project.settings import SECRET_KEY
 from django.shortcuts import get_object_or_404
+from django.contrib.auth import get_user_model
 
+User = get_user_model()
 load_dotenv()
 openai.api_key = os.getenv('OPENAI_API_KEY')
 
@@ -18,7 +20,8 @@ class ChatView(APIView):
     def get(self, request):
         access = request.COOKIES['access']
         payload = jwt.decode(access, SECRET_KEY, algorithms=['HS256'])
-        user = payload.get('user_id')
+        pk = payload.get('user_id')
+        user = get_object_or_404(User, pk=pk)
 
         conversations = Conversation.objects.filter(user=user)
         serialized_conversations = ConversationSerializer(conversations, many=True)
@@ -30,7 +33,8 @@ class ChatView(APIView):
         access = request.COOKIES['access']
         
         payload = jwt.decode(access, SECRET_KEY, algorithms=['HS256'])
-        user = payload.get('user_id')
+        pk = payload.get('user_id')
+        user = get_object_or_404(User, pk=pk)
 
         model_engine = "text-davinci-003"
         completions = openai.Completion.create(
