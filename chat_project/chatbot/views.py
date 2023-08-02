@@ -10,24 +10,15 @@ import jwt
 from chat_project.settings import SECRET_KEY
 from django.shortcuts import get_object_or_404
 from django.contrib.auth import get_user_model
+from rest_framework.throttling import AnonRateThrottle
 
 User = get_user_model()
 load_dotenv()
 openai.api_key = os.getenv('OPENAI_API_KEY')
 
 
-class ChatView(APIView):
-    def get(self, request):
-        access = request.COOKIES['access']
-        payload = jwt.decode(access, SECRET_KEY, algorithms=['HS256'])
-        pk = payload.get('user_id')
-        user = get_object_or_404(User, pk=pk)
-
-        conversations = Conversation.objects.filter(user=user)
-        serialized_conversations = ConversationSerializer(conversations, many=True)
-        return Response(serialized_conversations.data)
-
-    
+class Chat(APIView):
+    throttle_classes = [AnonRateThrottle]
     def post(self, request):
         prompt = request.POST.get('prompt')
         access = request.COOKIES['access']
@@ -55,3 +46,16 @@ class ChatView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         
         return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
+
+
+class ChatView(APIView):
+    def get(self, request):
+        access = request.COOKIES['access']
+        payload = jwt.decode(access, SECRET_KEY, algorithms=['HS256'])
+        pk = payload.get('user_id')
+        user = get_object_or_404(User, pk=pk)
+
+        conversations = Conversation.objects.filter(user=user)
+        serialized_conversations = ConversationSerializer(conversations, many=True)
+        return Response(serialized_conversations.data)
+
